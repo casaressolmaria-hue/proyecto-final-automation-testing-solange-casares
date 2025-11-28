@@ -2,11 +2,9 @@ import pytest
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
-USERNAME = 'standard_user'
-PASSWORD = 'secret_sauce'
-
 @pytest.mark.smoke
-def test_login(driver):
+@pytest.mark.login
+def test_login(driver, credenciales_validas):
     """
     Prueba el proceso de inicio de sesión en la aplicación.
 
@@ -23,7 +21,7 @@ def test_login(driver):
 
     try:
         login_page.abrir()
-        inventory_page = login_page.login(USERNAME, PASSWORD)
+        inventory_page = login_page.login(credenciales_validas["username"], credenciales_validas["password"])
 
         # Verifica que exista el elemento del título y que su texto sea 'Swag Labs'
         titulo = inventory_page.titulo()

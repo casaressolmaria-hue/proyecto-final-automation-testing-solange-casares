@@ -2,11 +2,9 @@ import pytest
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
 
-USERNAME = 'standard_user'
-PASSWORD = 'secret_sauce'
-
 @pytest.mark.smoke
-def test_catalogo(driver):
+@pytest.mark.catalogo
+def test_catalogo(driver, credenciales_validas):
     """
     Prueba integral del catálogo en la página de inventario.
 
@@ -31,7 +29,7 @@ def test_catalogo(driver):
     try:
         # Hace login
         login_page.abrir()
-        inventory_page = login_page.login(USERNAME, PASSWORD)
+        inventory_page = login_page.login(credenciales_validas["username"], credenciales_validas["password"])
 
         # Verifica título de sección
         seccion = inventory_page.titulo_de_seccion()

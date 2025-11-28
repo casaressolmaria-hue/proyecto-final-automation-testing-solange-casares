@@ -1,12 +1,10 @@
 import pytest
 from pages.login_page import LoginPage
 from utils.helpers import captura_de_pantalla
-
-USERNAME = 'standard_user'
-PASSWORD = 'secret_sauce'
     
 @pytest.mark.smoke
-def test_carrito(driver):
+@pytest.mark.carrito
+def test_carrito(driver, credenciales_validas):
     """
     Prueba del flujo completo de agregar un producto al carrito.
 
@@ -32,8 +30,7 @@ def test_carrito(driver):
     try:
         # Hace login
         login_page.abrir()
-        inventory_page = login_page.login(USERNAME, PASSWORD)
-
+        inventory_page = login_page.login(credenciales_validas["username"], credenciales_validas["password"])
         # Verifica título de sección
         seccion = inventory_page.titulo_de_seccion()
         assert seccion, "No se encontró el elemento de título de sección"

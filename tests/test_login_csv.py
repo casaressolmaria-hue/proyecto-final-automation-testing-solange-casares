@@ -5,6 +5,8 @@ from utils.helpers import captura_de_pantalla
 
 _CASOS_LOGIN = leer_csv_login('datos/login.csv')
 
+@pytest.mark.regresion
+@pytest.mark.login
 @pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
 def test_login_desde_csv(driver, usuario, clave, debe_funcionar):
     """

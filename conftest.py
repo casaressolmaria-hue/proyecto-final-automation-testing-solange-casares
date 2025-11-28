@@ -20,3 +20,7 @@ def driver():
 
     time.sleep(1)
     driver.quit()
+
+@pytest.fixture
+def credenciales_validas():
+    return {"username": "standard_user", "password": "secret_sauce"}

@@ -15,7 +15,8 @@ def usuario_logueado(driver):
     login_page.abrir()
     return login_page.login("standard_user", "secret_sauce")
 
-
+@pytest.mark.regresion
+@pytest.mark.carrito
 @pytest.mark.parametrize("producto", _PRODUCTOS)
 def test_carrito(driver, usuario_logueado, producto):
     """
