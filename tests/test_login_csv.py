@@ -8,7 +8,7 @@ _CASOS_LOGIN = leer_csv_login('datos/login.csv')
 @pytest.mark.regresion
 @pytest.mark.login
 @pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
-def test_login_desde_csv(driver, usuario, clave, debe_funcionar):
+def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
     """
     Test de login parametrizado usando datos provenientes de un archivo CSV.
 
@@ -33,19 +33,30 @@ def test_login_desde_csv(driver, usuario, clave, debe_funcionar):
         debe_funcionar (bool): Indica si el caso de prueba debe resultar en un login exitoso.
     """
     
+    logger.info("Iniciando test de login con usuario: '%s'", usuario)
     login_page = LoginPage(driver)
 
     try:
+        logger.info("Abriendo la página de login")
         login_page.abrir()
+        
+        logger.info("Intentando login con usuario='%s' y clave='%s'", usuario, clave)
         resultado = login_page.login(usuario, clave)
 
         if debe_funcionar:
+            logger.info("Se espera que el login funcione")
             assert resultado is not None, "El login debía funcionar pero falló."
-            assert "inventory.html" in driver.current_url
+            logger.info("Login exitoso")
+            assert "inventory.html" in driver.current_url, f"URL inesperada: {driver.current_url}"
+            logger.info("Redirigido correctamente a la página de inventario")
         else:
+            logger.info("Se espera que el login falle")
             assert resultado is None, "El login no debía funcionar, pero sí funcionó."
             assert login_page.hay_error(), "Se esperaba un mensaje de error y no apareció."
+            logger.info("Mensaje de error mostrado correctamente")
 
     except Exception as e:
+        logger.error("Ocurrió un error durante el test de login: %s", e)
         captura_de_pantalla(driver, 'test_login_desde_csv')
+        logger.info("Captura de pantalla tomada por el fallo")
         raise e
