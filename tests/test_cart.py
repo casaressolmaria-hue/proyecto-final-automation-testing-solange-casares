@@ -30,7 +30,7 @@ def test_carrito(logger, usuario_logueado):
     seccion = inventory_page.titulo_de_seccion()
     assert seccion, "No se encontró el elemento de título de sección"
     logger.info("Título de sección encontrado: '%s'", seccion.text)
-    assert seccion.ttttt == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
+    assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
     cantidad_productos = inventory_page.obtener_cantidad_productos()
     logger.info("Cantidad de productos en el catálogo: %d", cantidad_productos)
