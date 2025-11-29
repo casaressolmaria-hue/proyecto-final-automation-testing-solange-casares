@@ -50,4 +50,4 @@ El objetivo es garantizar que las funciones críticas del sitio web se comporten
     pytest -v tests
  - Para generar un reporte HTML:
     ```bash
-    pytest tests -v --html=./reports/reporte.html
+    pytest tests/ --html=reports/reporte.html --self-contained-html -v -s

@@ -1,9 +1,8 @@
 import pytest
-from utils.helpers import captura_de_pantalla
 
 @pytest.mark.smoke
 @pytest.mark.login
-def test_login(driver, logger, usuario_logueado):
+def test_login(logger, usuario_logueado):
     """
     Prueba el proceso de inicio de sesión en la aplicación.
 
@@ -16,28 +15,21 @@ def test_login(driver, logger, usuario_logueado):
     Si ocurre un error, captura una captura de pantalla y relanza la excepción.
     """
     
-    try:
-        logger.info("Iniciando verificación de login y página de inventario")
-        inventory_page = usuario_logueado
+    logger.info("Iniciando verificación de login y página de inventario")
+    inventory_page = usuario_logueado
 
-        # Verifica que exista el elemento del título y que su texto sea 'Swag Labs'
-        logger.info("Verificando el título del logo de la página")
-        titulo = inventory_page.titulo()
-        assert titulo, "No se encontró el titulo"
-        logger.info("Título encontrado: '%s'", titulo.text)
-        assert titulo.text == "Swag Labs", f"Texto inesperado en logo: se esperaba 'Swag Labs' pero se obtuvo '{titulo.text}'"
+    # Verifica que exista el elemento del título y que su texto sea 'Swag Labs'
+    logger.info("Verificando el título del logo de la página")
+    titulo = inventory_page.titulo()
+    assert titulo, "No se encontró el titulo"
+    logger.info("Título encontrado: '%s'", titulo.text)
+    assert titulo.text == "Swag Labs", f"Texto inesperado en logo: se esperaba 'Swag Labs' pero se obtuvo '{titulo.text}'"
 
-        # Verifica título de sección
-        logger.info("Verificando título de la sección de productos")
-        seccion = inventory_page.titulo_de_seccion()
-        assert seccion, "No se encontró el elemento de título de sección"
-        logger.info("Título de sección encontrado: '%s'", seccion.text)
-        assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
+    # Verifica título de sección
+    logger.info("Verificando título de la sección de productos")
+    seccion = inventory_page.titulo_de_seccion()
+    assert seccion, "No se encontró el elemento de título de sección"
+    logger.info("Título de sección encontrado: '%s'", seccion.text)
+    assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
-        logger.info("Login completado correctamente y se ingresó a la página de inventario.")
-
-    except Exception as e:
-        logger.error("Error durante la verificación de login o inventario: %s", e)
-        captura_de_pantalla(driver, 'test_login')
-        logger.info("Captura de pantalla tomada por el fallo")
-        raise e
+    logger.info("Login completado correctamente y se ingresó a la página de inventario.")

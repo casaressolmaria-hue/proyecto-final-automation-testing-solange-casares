@@ -1,14 +1,13 @@
 
 import pytest
 from utils.datos import leer_json_productos
-from utils.helpers import captura_de_pantalla
 
 _PRODUCTOS = leer_json_productos('datos/productos.json')
 
 @pytest.mark.regresion
 @pytest.mark.carrito
 @pytest.mark.parametrize("producto", _PRODUCTOS)
-def test_carrito(driver, logger, usuario_logueado, producto):
+def test_carrito(logger, usuario_logueado, producto):
     """
     Test end-to-end del flujo de agregar un producto al carrito.
 
@@ -30,47 +29,42 @@ def test_carrito(driver, logger, usuario_logueado, producto):
         usuario_logueado (InventoryPage): Página ya autenticada para comenzar el test.
         producto (dict): Datos del producto (nombre y precio) proporcionados por la parametrización.
     """
-        
-    try:
-        inventory_page = usuario_logueado
-        logger.info("Iniciando test del carrito para el producto: %s", producto["nombre"])
+    
+    inventory_page = usuario_logueado
+    logger.info("Iniciando test del carrito para el producto: %s", producto["nombre"])
 
-        logger.info("Obteniendo título de la sección del inventario")
-        seccion = inventory_page.titulo_de_seccion()
-        assert seccion, "No se encontró el elemento de título de sección"
-        logger.info("Título de sección encontrado: '%s'", seccion.text)
-        assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
+    logger.info("Obteniendo título de la sección del inventario")
+    seccion = inventory_page.titulo_de_seccion()
+    assert seccion, "No se encontró el elemento de título de sección"
+    logger.info("Título de sección encontrado: '%s'", seccion.text)
+    assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
-        cantidad_productos = inventory_page.obtener_cantidad_productos()
-        logger.info("Cantidad de productos encontrados en el catálogo: %d", cantidad_productos)
-        assert cantidad_productos > 0, "No se encontraron productos en el catálogo"
+    cantidad_productos = inventory_page.obtener_cantidad_productos()
+    logger.info("Cantidad de productos encontrados en el catálogo: %d", cantidad_productos)
+    assert cantidad_productos > 0, "No se encontraron productos en el catálogo"
 
-        precio_del_producto = inventory_page.obtener_precio_del_producto(producto["nombre"])
-        logger.info("Precio obtenido para '%s': %s", producto["nombre"], precio_del_producto)
-        assert precio_del_producto, "Producto sin precio"
-        assert precio_del_producto == producto["precio"], (
-            f"El precio mostrado ({precio_del_producto}) no coincide con el esperado ({producto['precio']}) para el producto {producto['nombre']}"
-        )
+    precio_del_producto = inventory_page.obtener_precio_del_producto(producto["nombre"])
+    logger.info("Precio obtenido para '%s': %s", producto["nombre"], precio_del_producto)
+    assert precio_del_producto, "Producto sin precio"
+    assert precio_del_producto == producto["precio"], (
+        f"El precio mostrado ({precio_del_producto}) no coincide con el esperado ({producto['precio']}) para el producto {producto['nombre']}"
+    )
 
-        logger.info("Agregando producto al carrito: %s", producto["nombre"])
-        inventory_page.agregar_producto_por_nombre(producto["nombre"])
+    logger.info("Agregando producto al carrito: %s", producto["nombre"])
+    inventory_page.agregar_producto_por_nombre(producto["nombre"])
 
-        logger.info("Verificando que el contador del carrito se actualizó")
-        contador_carrito = inventory_page.carrito_contador()
-        logger.info("Valor del contador del carrito: %d", contador_carrito)
-        assert contador_carrito > 0, "No se encontró el contador del carrito después de agregar el producto"
+    logger.info("Verificando que el contador del carrito se actualizó")
+    contador_carrito = inventory_page.carrito_contador()
+    logger.info("Valor del contador del carrito: %d", contador_carrito)
+    assert contador_carrito > 0, "No se encontró el contador del carrito después de agregar el producto"
 
-        logger.info("Navegando a la página del carrito")
-        cart_page = inventory_page.ir_al_carrito()
+    logger.info("Navegando a la página del carrito")
+    cart_page = inventory_page.ir_al_carrito()
 
-        logger.info("Verificando la lista de productos en el carrito")
-        lista_productos = cart_page.lista_de_los_productos()
-        assert lista_productos, "No se encontró la lista de productos en el carrito"
+    logger.info("Verificando la lista de productos en el carrito")
+    lista_productos = cart_page.lista_de_los_productos()
+    assert lista_productos, "No se encontró la lista de productos en el carrito"
 
-        productos_del_carrito = cart_page.productos_del_carrito()
-        logger.info("Cantidad de productos en el carrito: %d", len(productos_del_carrito))
-        assert len(productos_del_carrito) == 1, f"Se esperaba 1 producto en el carrito, pero se encontraron {len(productos_del_carrito)}"
-
-    except Exception as e:
-        captura_de_pantalla(driver, 'test_carrito')
-        raise e
+    productos_del_carrito = cart_page.productos_del_carrito()
+    logger.info("Cantidad de productos en el carrito: %d", len(productos_del_carrito))
+    assert len(productos_del_carrito) == 1, f"Se esperaba 1 producto en el carrito, pero se encontraron {len(productos_del_carrito)}"
