@@ -1,12 +1,8 @@
 import pytest
-from pages.login_page import LoginPage
-from utils.helpers import captura_de_pantalla
-
-USERNAME = 'standard_user'
-PASSWORD = 'secret_sauce'
 
 @pytest.mark.smoke
-def test_catalogo(driver):
+@pytest.mark.catalogo
+def test_catalogo(logger, usuario_logueado):
     """
     Prueba integral del catálogo en la página de inventario.
 
@@ -26,98 +22,88 @@ def test_catalogo(driver):
     - Relanza la excepción para que el test falle correctamente.
     """
     
-    login_page = LoginPage(driver)
+    inventory_page = usuario_logueado
+    logger.info("Iniciando test de la página de inventario")
 
-    try:
-        # Hace login
-        login_page.abrir()
-        inventory_page = login_page.login(USERNAME, PASSWORD)
+    logger.info("Obteniendo título de la sección del inventario")
+    seccion = inventory_page.titulo_de_seccion()
+    assert seccion, "No se encontró el elemento de título de sección"
+    logger.info("Título de sección encontrado: '%s'", seccion.text)
+    assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
 
-        # Verifica título de sección
-        seccion = inventory_page.titulo_de_seccion()
-        assert seccion, "No se encontró el elemento de título de sección"
-        assert seccion.text == 'Products', f"Título inesperado: se esperaba 'Products' pero se obtuvo '{seccion.text}'"
+    logger.info("Verificando existencia del botón de menú lateral")
+    assert inventory_page.menu_boton(), "No se encontró el botón del menú"
+    logger.info("Botón de menú encontrado.")
 
-        # Verifica que exista el botón de menú lateral antes de hacer clic
-        assert inventory_page.menu_boton(), "No se encontró el botón del menú"
-        print("Botón de menú encontrado.")
+    logger.info("Haciendo clic en el botón de menú lateral")
+    inventory_page.abrir_menu()
+    logger.info("El menú lateral está abierto.")
 
-        # Abre el menú lateral
-        print("Haciendo clic en el botón de menú lateral")
-        inventory_page.abrir_menu()
-        print("El menú lateral está abierto.")
+    menu_items_esperados = ["All Items", "About", "Logout", "Reset App State"]
+    menu_items = inventory_page.menu_items()
+    logger.info("Verificando cantidad de ítems en el menú: esperados %d, encontrados %d",
+                len(menu_items_esperados), len(menu_items))
+    assert len(menu_items) == len(menu_items_esperados), (
+        f"Cantidad de ítems inesperada: se esperaban {len(menu_items_esperados)}, "
+        f"pero se encontraron {len(menu_items)}."
+    )
 
-        # Verifica que los enlaces requeridos estén presentes y con el texto correcto
-        menu_items_esperados = ["All Items", "About", "Logout", "Reset App State"]
-        menu_items = inventory_page.menu_items()
+    for index, esperado in enumerate(menu_items_esperados):
+        obtenido = menu_items[index]
+        logger.info("Verificando menú ítem: esperado '%s', obtenido '%s'", esperado, obtenido.text)
+        assert esperado == obtenido.text, f"Texto inesperado: se esperaba '{esperado}' pero se obtuvo '{obtenido.text}'"
 
-        assert len(menu_items) == len(menu_items_esperados), (
-            f"Cantidad de ítems inesperada: se esperaban {len(menu_items_esperados)}, "
-            f"pero se encontraron {len(menu_items)}."
-        )
+    logger.info("Todos los ítems del menú fueron verificados correctamente.")
 
-        for index, esperado in enumerate(menu_items_esperados):
-            obtenido = menu_items[index]
-            print(f"Verificando menú ítem: esperado '{esperado}', obtenido '{obtenido.text}'")
-            assert esperado == obtenido.text, (
-                f"Texto inesperado: se esperaba '{esperado}' pero se obtuvo '{obtenido.text}'"
-            )
+    logger.info("Verificando que la opción del ordenamiento activo sea 'Name (A to Z)'")
+    active_option = inventory_page.filtro_activo()
+    assert active_option, "No se encontró el elemento con el ordenamiento activo."
+    logger.info("Opción activa encontrada: '%s'", active_option.text)
+    assert active_option.text == "Name (A to Z)", (
+        f"El ordenamiento activo no es el esperado: se esperaba 'Name (A to Z)', pero se encontró '{active_option.text}'."
+    )
 
-        print("Todos los ítems del menú fueron verificados correctamente.")
+    logger.info("Verificando existencia del select de ordenamiento")
+    select = inventory_page.select_de_ordenamiento()
+    assert select, "No se encontró el select de ordenamiento"
+    opciones = inventory_page.opciones_de_ordenamiento()
+    logger.info("Cantidad de opciones en el select: %d", len(opciones))
+    assert len(opciones) > 0, "El select no contiene opciones"
 
-        # Verifica que el elemento activo del ordenamiento tenga el valor esperado
-        print("Verificando que la opción del ordenamiento activo sea 'Name (A to Z)'")
-        active_option = inventory_page.filtro_activo()
-        assert active_option, "No se encontró el elemento con el ordenamiento activo."
-        assert active_option.text == "Name (A to Z)", f"El ordenamiento activo no es el esperado: se esperaba 'Name (A to Z)', pero se encontró '{active_option.text}'."
-        
-        # Verifica que el select de ordenamiento exista y tenga opciones
-        print("Verificando la existencia del select de ordenamiento")
-        assert inventory_page.select_de_ordenamiento(), "No se encontró el select de ordenamiento"
-        opciones = inventory_page.opciones_de_ordenamiento()
-        assert len(opciones) > 0, "El select no contiene opciones"
+    opciones_esperadas = [
+        "Name (A to Z)",
+        "Name (Z to A)",
+        "Price (low to high)",
+        "Price (high to low)"
+    ]
+    logger.info("Verificando orden y texto de cada opción del select")
+    for index, texto_esperado in enumerate(opciones_esperadas):
+        option_text = opciones[index].text
+        logger.info("Opción %d: esperado '%s', obtenido '%s'", index, texto_esperado, option_text)
+        assert option_text == texto_esperado, f"Texto inesperado en opción {index}: se esperaba {texto_esperado} pero se obtuvo {option_text}"
 
-        # Verifica que las opciones estén en el orden esperado
-        opciones_esperadas = [
-            "Name (A to Z)",
-            "Name (Z to A)",
-            "Price (low to high)",
-            "Price (high to low)"
-        ]
+    logger.info("Verificando existencia del carrito de compras")
+    assert inventory_page.carrito(), "No se encontró el elemento con id shopping_cart_container"
 
-        print("Verificando el orden y texto de las opciones")
-        for index, texto_esperado in enumerate(opciones_esperadas):
-            option_text = opciones[index].text
-            assert option_text == texto_esperado, f"Texto inesperado en opción {index}: se esperaba {texto_esperado} pero se obtuvo {option_text}"
+    logger.info("Verificando que el carrito esté vacío")
+    contador = inventory_page.carrito_contador()
+    logger.info("Valor del contador del carrito: %d", contador)
+    assert contador == 0, f"El carrito no está vacío: se encontró un contador de cantidad: {contador}"
 
-        # Verifica que exista el carrito de compras
-        print("Verificando la existencia del carrito de compras")
-        assert inventory_page.carrito(), "No se encontró el elemento con id shopping_cart_container"
+    cantidad_productos = inventory_page.obtener_cantidad_productos()
+    logger.info("Cantidad de productos en el catálogo: %d", cantidad_productos)
+    assert cantidad_productos > 0, "No se encontraron productos en el catálogo"
 
-        # Verifica que el carrito esté vacío (sin contador de cantidad)
-        print("Verificando que el carrito esté vacío")
-        contador = inventory_page.carrito_contador()
-        assert contador == 0, f"El carrito no está vacío: se encontró un contador de cantidad: {contador}"
-
-        # Confirma que aparece al menos un producto
-        assert inventory_page.obtener_cantidad_productos() > 0, "No se encontraron productos en el catálogo"
-
-        productos = inventory_page.obtener_productos()
-
-        # Verifica que cada producto tenga nombre y precio visibles
-        for producto in productos:
-            nombre_del_producto = inventory_page.nombre_del_producto(producto)
-            assert nombre_del_producto, "Producto sin nombre"
-            assert inventory_page.obtener_precio_del_producto(nombre_del_producto), "Producto sin precio"
-
-        # Muestra en consola el nombre y precio del primer producto
-        primer_producto = productos[0]
-        nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
+    productos = inventory_page.obtener_productos()
+    logger.info("Verificando que cada producto tenga nombre y precio visibles")
+    for index, producto in enumerate(productos):
+        nombre_del_producto = inventory_page.nombre_del_producto(producto)
         precio_del_producto = inventory_page.obtener_precio_del_producto(nombre_del_producto)
+        logger.info("Producto %d: Nombre='%s', Precio='%s'", index, nombre_del_producto, precio_del_producto)
+        assert nombre_del_producto, f"Producto {index} sin nombre"
+        assert precio_del_producto, f"Producto {index} sin precio"
 
-        print(f"Primer producto: Nombre: {nombre_del_producto}, Precio: {precio_del_producto}")
-
-    except Exception as e:
-        captura_de_pantalla(driver, 'test_catalogo')
-        raise e
-
+    primer_producto = productos[0]
+    nombre_del_producto = inventory_page.nombre_del_producto(primer_producto)
+    precio_del_producto = inventory_page.obtener_precio_del_producto(nombre_del_producto)
+    logger.info("Primer producto: Nombre='%s', Precio='%s'", nombre_del_producto, precio_del_producto)
