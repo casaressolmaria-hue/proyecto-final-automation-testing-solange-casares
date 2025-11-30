@@ -16,10 +16,6 @@ def test_catalogo(logger, usuario_logueado):
     - Valida que haya productos visibles en el catálogo.
     - Confirma que cada producto tenga nombre y precio visibles.
     - Imprime en consola el nombre y precio del primer producto.
-
-    Si ocurre un error durante la prueba:
-    - Captura una captura de pantalla.
-    - Relanza la excepción para que el test falle correctamente.
     """
     
     inventory_page = usuario_logueado

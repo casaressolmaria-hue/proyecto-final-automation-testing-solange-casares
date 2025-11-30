@@ -12,7 +12,6 @@ def test_login(logger, usuario_logueado):
     - Verifica que se acceda correctamente al inventario.
     - Valida que los títulos esperados estén presentes.
 
-    Si ocurre un error, captura una captura de pantalla y relanza la excepción.
     """
     
     logger.info("Iniciando verificación de login y página de inventario")

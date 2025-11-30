@@ -1,8 +1,8 @@
 
 import pytest
-from utils.datos import leer_json_productos
+from utils.datos import leer_json
 
-_PRODUCTOS = leer_json_productos('datos/productos.json')
+_PRODUCTOS = leer_json('datos/productos.json')
 
 @pytest.mark.regresion
 @pytest.mark.carrito
@@ -21,8 +21,6 @@ def test_carrito(logger, usuario_logueado, producto):
     6. Que el contador del carrito incrementa tras agregar el producto.
     7. Que el carrito contiene exactamente un producto.
     8. Que el nombre y precio del producto en el carrito coinciden con los esperados.
-
-    Si ocurre cualquier excepción, se captura una captura de pantalla antes de relanzar el error.
 
     Parámetros:
         driver (WebDriver): Instancia del navegador para la prueba.

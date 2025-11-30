@@ -1,6 +1,7 @@
 import os
 import pytest
 import time
+import pathlib
 import logging
 from datetime import datetime
 from selenium import webdriver
@@ -28,8 +29,24 @@ def driver():
 
 @pytest.fixture
 def logger():
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
-    return logging.getLogger()
+    path_dir = pathlib.Path("logs")
+    path_dir.mkdir(exist_ok=True)
+
+    log_file = path_dir / "historial.log"
+
+    logger = logging.getLogger("test_logger")
+    logger.setLevel(logging.INFO)
+
+    if not logger.handlers:
+        handler = logging.FileHandler(log_file, mode="a", encoding="utf-8")
+        formatter = logging.Formatter(
+            "%(asctime)s %(levelname)s %(name)s - %(message)s",
+            datefmt="%H:%M:%S"
+        )
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+    return logger
 
 @pytest.fixture
 def credenciales_validas():
