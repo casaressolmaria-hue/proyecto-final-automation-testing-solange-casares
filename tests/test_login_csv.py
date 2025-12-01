@@ -7,7 +7,7 @@ _CASOS_LOGIN = leer_csv('datos/login.csv')
 @pytest.mark.regresion
 @pytest.mark.login
 @pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
-def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
+def test_login_desde_csv(driver, request, logger, usuario, clave, debe_funcionar):
     """
     Test de login parametrizado usando datos provenientes de un archivo CSV.
 
@@ -28,6 +28,8 @@ def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
         clave (str): Contraseña asociada al usuario.
         debe_funcionar (bool): Indica si el caso de prueba debe resultar en un login exitoso.
     """
+    
+    request.node.page_url = driver.current_url
     
     logger.info("Iniciando test de login con usuario: '%s'", usuario)
     login_page = LoginPage(driver)

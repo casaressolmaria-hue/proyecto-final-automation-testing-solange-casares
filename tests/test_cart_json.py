@@ -7,7 +7,7 @@ _PRODUCTOS = leer_json('datos/productos.json')
 @pytest.mark.regresion
 @pytest.mark.carrito
 @pytest.mark.parametrize("producto", _PRODUCTOS)
-def test_carrito(logger, usuario_logueado, producto):
+def test_carrito(logger, usuario_logueado, producto, driver, request):
     """
     Test end-to-end del flujo de agregar un producto al carrito.
 
@@ -28,6 +28,8 @@ def test_carrito(logger, usuario_logueado, producto):
         producto (dict): Datos del producto (nombre y precio) proporcionados por la parametrización.
     """
     
+    request.node.page_url = driver.current_url
+
     inventory_page = usuario_logueado
     logger.info("Iniciando test del carrito para el producto: %s", producto["nombre"])
 

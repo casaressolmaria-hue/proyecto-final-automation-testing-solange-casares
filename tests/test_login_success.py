@@ -2,7 +2,7 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.login
-def test_login(logger, usuario_logueado):
+def test_login(logger, usuario_logueado, request, driver):
     """
     Prueba el proceso de inicio de sesión en la aplicación.
 
@@ -13,6 +13,8 @@ def test_login(logger, usuario_logueado):
     - Valida que los títulos esperados estén presentes.
 
     """
+    
+    request.node.page_url = driver.current_url
     
     logger.info("Iniciando verificación de login y página de inventario")
     inventory_page = usuario_logueado
