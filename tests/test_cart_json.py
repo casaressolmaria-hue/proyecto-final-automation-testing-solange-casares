@@ -1,13 +1,13 @@
 
 import pytest
-from utils.datos import leer_json_productos
+from utils.datos import leer_json
 
-_PRODUCTOS = leer_json_productos('datos/productos.json')
+_PRODUCTOS = leer_json('datos/productos.json')
 
 @pytest.mark.regresion
 @pytest.mark.carrito
 @pytest.mark.parametrize("producto", _PRODUCTOS)
-def test_carrito(logger, usuario_logueado, producto):
+def test_carrito(logger, usuario_logueado, producto, driver, request):
     """
     Test end-to-end del flujo de agregar un producto al carrito.
 
@@ -22,14 +22,14 @@ def test_carrito(logger, usuario_logueado, producto):
     7. Que el carrito contiene exactamente un producto.
     8. Que el nombre y precio del producto en el carrito coinciden con los esperados.
 
-    Si ocurre cualquier excepción, se captura una captura de pantalla antes de relanzar el error.
-
     Parámetros:
         driver (WebDriver): Instancia del navegador para la prueba.
         usuario_logueado (InventoryPage): Página ya autenticada para comenzar el test.
         producto (dict): Datos del producto (nombre y precio) proporcionados por la parametrización.
     """
     
+    request.node.page_url = driver.current_url
+
     inventory_page = usuario_logueado
     logger.info("Iniciando test del carrito para el producto: %s", producto["nombre"])
 

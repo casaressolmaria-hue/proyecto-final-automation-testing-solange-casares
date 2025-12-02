@@ -2,7 +2,7 @@ import pytest
     
 @pytest.mark.smoke
 @pytest.mark.carrito
-def test_carrito(logger, usuario_logueado):
+def test_carrito(logger, usuario_logueado, request, driver):
     """
     Prueba del flujo completo de agregar un producto al carrito.
 
@@ -17,11 +17,9 @@ def test_carrito(logger, usuario_logueado):
     - Valida que exista la lista de productos del carrito.
     - Verifica que haya exactamente un producto añadido.
     - Confirma que el nombre y precio del producto del carrito coincidan con el producto seleccionado.
-
-    En caso de error:
-    - Se captura una captura de pantalla.
-    - Se relanza la excepción para marcar el test como fallido.
     """
+
+    request.node.page_url = driver.current_url
 
     inventory_page = usuario_logueado
     logger.info("Iniciando test del carrito")

@@ -1,13 +1,13 @@
 import pytest
 from pages.login_page import LoginPage
-from utils.datos import leer_csv_login
+from utils.datos import leer_csv
 
-_CASOS_LOGIN = leer_csv_login('datos/login.csv')
+_CASOS_LOGIN = leer_csv('datos/login.csv')
 
 @pytest.mark.regresion
 @pytest.mark.login
 @pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
-def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
+def test_login_desde_csv(driver, request, logger, usuario, clave, debe_funcionar):
     """
     Test de login parametrizado usando datos provenientes de un archivo CSV.
 
@@ -22,15 +22,14 @@ def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
         - Verifica que el resultado sea None.
         - Comprueba que se muestre un mensaje de error en la página.
 
-    En caso de cualquier excepción durante la ejecución,
-    se captura una captura de pantalla antes de relanzar el error.
-
     Parámetros:
         driver (WebDriver): Instancia del navegador usada en la prueba.
         usuario (str): Nombre de usuario leído desde el CSV.
         clave (str): Contraseña asociada al usuario.
         debe_funcionar (bool): Indica si el caso de prueba debe resultar en un login exitoso.
     """
+    
+    request.node.page_url = driver.current_url
     
     logger.info("Iniciando test de login con usuario: '%s'", usuario)
     login_page = LoginPage(driver)
@@ -41,7 +40,7 @@ def test_login_desde_csv(driver, logger, usuario, clave, debe_funcionar):
     logger.info("Intentando login con usuario='%s' y clave='%s'", usuario, clave)
     resultado = login_page.login(usuario, clave)
 
-    if debe_funcionar:
+    if debe_funcionar == "True":
         logger.info("Se espera que el login funcione")
         assert resultado is not None, "El login debía funcionar pero falló."
         logger.info("Login exitoso")

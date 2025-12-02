@@ -1,0 +1,5 @@
+correo,contrasena,estado_esperado,token_esperado
+eve.holt@reqres.in,cityslicka,200,True
+eve.holt@reqres.in,,400,False
+,cityslicka,400,False
+,,400,False

@@ -2,7 +2,7 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.catalogo
-def test_catalogo(logger, usuario_logueado):
+def test_catalogo(logger, usuario_logueado, request, driver):
     """
     Prueba integral del catálogo en la página de inventario.
 
@@ -16,11 +16,9 @@ def test_catalogo(logger, usuario_logueado):
     - Valida que haya productos visibles en el catálogo.
     - Confirma que cada producto tenga nombre y precio visibles.
     - Imprime en consola el nombre y precio del primer producto.
-
-    Si ocurre un error durante la prueba:
-    - Captura una captura de pantalla.
-    - Relanza la excepción para que el test falle correctamente.
     """
+    
+    request.node.page_url = driver.current_url
     
     inventory_page = usuario_logueado
     logger.info("Iniciando test de la página de inventario")
