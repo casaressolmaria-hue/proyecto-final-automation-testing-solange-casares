@@ -1,4 +1,12 @@
-Faker==38.2.0
+# Framework Testing
 pytest==8.4.2
-Requests==2.32.5
+pytest-html==4.1.1
+
+# Web Testing
 selenium==4.38.0
+
+# API Testing
+Requests==2.32.5
+
+# Datos de prueba
+Faker==38.2.0

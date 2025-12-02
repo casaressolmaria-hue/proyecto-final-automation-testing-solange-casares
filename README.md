@@ -4,8 +4,7 @@
 
 ## Propósito del proyecto
 
-El objetivo de este proyecto es automatizar pruebas funcionales y de API
-para la plataforma **SauceDemo**, garantizando que sus funcionalidades
+El objetivo de este proyecto es automatizar pruebas funcionales para la plataforma **SauceDemo**, y de APIs **reqres** y **jsonplaceholder**, garantizando que sus funcionalidades
 críticas operen correctamente.\
 Incluye pruebas de interfaz web con Selenium y pruebas de API,
 permitiendo validar comportamientos clave del sistema mediante scripts
@@ -50,15 +49,24 @@ reproducibles.
 
     pytest -v tests_api/
 
+### Con markers
+definidos en pytest.ini
+
+    pytest -m <marker>
+
 ### Completo
 
     pytest -v
 
 ### Reporte HTML
+en un único archivo
 
     pytest --html=reports/reporte.html --self-contained-html -v -s
 
 ## ¿Cómo interpretar los reportes generados?
 
-Los reportes se guardan en `reports/` e incluyen: - Estado de cada
-prueba - Tiempos - Capturas (si están configuradas)
+Los reportes se guardan en `reports/` e incluyen:
+
+ - Estado de cada prueba y tiempos
+ - Subcarpeta `screens/` - contiene las capturas de pantalla tomadas para los tests que fallaron
+ - Información del entorno

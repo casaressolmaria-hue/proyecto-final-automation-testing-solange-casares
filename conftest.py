@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import pytest
 import time
@@ -83,7 +84,8 @@ def pytest_runtest_makereport(item, call):
     if rep.when == "call" and rep.failed:
         driver = item.funcargs.get('driver')
         if driver:
-            file_name = target / f"{item.name}_{rep.when}.png"
+            tiempo = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+            file_name = target / f"{item.name}_{tiempo}.png"
             
             logger_fixture = item.funcargs.get("logger")
 
