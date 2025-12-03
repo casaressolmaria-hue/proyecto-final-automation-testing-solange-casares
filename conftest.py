@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import pytest
 import time
@@ -83,7 +84,8 @@ def pytest_runtest_makereport(item, call):
     if rep.when == "call" and rep.failed:
         driver = item.funcargs.get('driver')
         if driver:
-            file_name = target / f"{item.name}_{rep.when}.png"
+            tiempo = datetime.now().strftime("%d-%m-%Y %H-%M-%S")
+            file_name = target / f"{item.name}_{tiempo}.png"
             
             logger_fixture = item.funcargs.get("logger")
 
@@ -108,3 +110,9 @@ def pytest_html_results_table_header(cells):
 def pytest_html_results_table_row(report, cells):
     """Añade la URL de la página al reporte"""
     cells.insert(4, getattr(report, 'page_url', '-'))
+
+def pytest_html_report_title(report):
+    report.title = "TalentoLab - Resumen de ejecución"
+
+def pytest_html_results_summary(prefix, summary, postfix):
+    summary.extend(["<p>Suite UI + API completa</p>"])

@@ -2,7 +2,7 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.login
-def test_login(logger, usuario_logueado, request, driver):
+def test_login(logger, driver, request, usuario_logueado):
     """
     Prueba el proceso de inicio de sesión en la aplicación.
 

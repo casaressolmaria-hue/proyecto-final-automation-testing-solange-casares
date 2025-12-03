@@ -2,7 +2,7 @@ import pytest
 
 @pytest.mark.smoke
 @pytest.mark.catalogo
-def test_catalogo(logger, usuario_logueado, request, driver):
+def test_catalogo(driver, logger, request, usuario_logueado):
     """
     Prueba integral del catálogo en la página de inventario.
 

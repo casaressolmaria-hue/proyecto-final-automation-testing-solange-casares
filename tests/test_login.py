@@ -7,7 +7,7 @@ _CASOS_LOGIN = leer_csv('datos/login.csv')
 @pytest.mark.regresion
 @pytest.mark.login
 @pytest.mark.parametrize("usuario, clave, debe_funcionar", _CASOS_LOGIN)
-def test_login_desde_csv(driver, request, logger, usuario, clave, debe_funcionar):
+def test_login(driver, logger, request, usuario, clave, debe_funcionar):
     """
     Test de login parametrizado usando datos provenientes de un archivo CSV.
 
